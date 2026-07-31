@@ -10,7 +10,7 @@
 <body><main>
   <h1>金管會重大裁罰案件儀表板</h1>
   <p class="sub">依發布日期統計｜民國年度｜資料擷取：2026-07-31</p>
-  <p class="actions"><button id="recalculate" class="button" type="button">重新統計</button> <a class="button" href="https://www.fsc.gov.tw/ch/home.jsp?id=131&amp;parentpath=0,2" target="_blank" rel="noopener noreferrer">裁罰案件頁面</a></p>
+  <p class="actions"><a class="button" href="https://www.fsc.gov.tw/ch/home.jsp?id=131&amp;parentpath=0,2" target="_blank" rel="noopener noreferrer">裁罰案件頁面</a></p>
   <section class="filters" aria-label="篩選條件">
     <label>年度<select id="year"><option value="">全部年度</option></select></label>
     <label>裁罰機構<select id="unit"><option value="">全部機構</option></select></label>
@@ -37,6 +37,5 @@ function chart(id,pairs,color){const svg=$(id), w=Math.max(300,svg.clientWidth||
 function render(){const f=Object.fromEntries(fields.map(k=>[k,$(k).value]));const data=CASES.filter(x=>(!f.year||x.year==f.year)&&(!f.unit||x.unit===f.unit)&&(!f.entity||x.entity===f.entity)&&(!f.type||x.caseType===f.type)&&(!f.amount||Number(x.amount)>=Number(f.amount)));$('count').textContent=data.length.toLocaleString();$('totalAmount').textContent=amountText(data.reduce((sum,x)=>sum+Number(x.amount||0),0));$('entities').textContent=new Set(data.map(x=>x.entity)).size.toLocaleString();$('latest').textContent=data[0]?.date||'–';$('shown').textContent=`顯示 ${data.length} 筆`;
 chart('yearChart',grouped(data,x=>x.year),'#1769aa');chart('unitChart',grouped(data,x=>x.unit),'#048a81');$('rows').innerHTML=data.map(x=>`<tr><td>${x.date}</td><td>${x.year}</td><td>${esc(x.unit)}</td><td>${esc(x.entity)}</td><td><span class="tag">${typeLabel[x.caseType]}</span></td><td>${amountText(x.amount)}</td><td><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a></td></tr>`).join('')||'<tr><td colspan="7">沒有符合條件的案件。</td></tr>'}
 fields.forEach(k=>$(k).addEventListener('change',render));
-$('recalculate').addEventListener('click',()=>{fields.forEach(k=>$(k).value='');render();$('recalculate').textContent='已重新統計';setTimeout(()=>$('recalculate').textContent='重新統計',1200)});
 window.addEventListener('resize',render);render();
 </script></body></html>
